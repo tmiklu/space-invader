@@ -84,6 +84,18 @@ enemy_y_change = 40
 
 #
 ##
+### enemy1
+##
+#
+enemy1_img = pygame.image.load('enemy/enemy.png')
+enemy1_pixel = 64
+enemy1_x = random.randint(0, (799 - enemy1_pixel))
+enemy1_y = random.randint(50, 150)
+enemy1_x_change = 0.3
+enemy1_y_change = 40
+
+#
+##
 ### bullet
 ##
 #
@@ -104,6 +116,10 @@ def player(x, y):
 def enemy(x, y):
     # blit = draw image of player|rocket
     screen.blit(enemy_img, (x, y))
+
+def enemy1(x, y):
+    # blit = draw image of player|rocket
+    screen.blit(enemy1_img, (x, y))
 
 def bullet(x, y):
     # blit = draw image of player|rocket
@@ -173,8 +189,19 @@ while running:
         enemy_x_change = -0.2
         enemy_y += enemy_y_change
 
+    # enemy1
+    enemy1_x += enemy1_x_change
+
+    if enemy1_x <= right_border:
+        enemy1_x_change = 0.2
+        enemy1_y += enemy1_y_change
+    elif enemy1_x >= left_border:
+        enemy1_x_change = -0.2
+        enemy1_y += enemy1_y_change
+
     player(player_x, player_y)
     enemy(enemy_x, enemy_y)
+    enemy1(enemy1_x, enemy1_y)
     # update screen game when score changing, bullets and etc...
     pygame.display.update()
     
