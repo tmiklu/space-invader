@@ -40,7 +40,7 @@ screen = pygame.display.set_mode(size=(screen_width, screen_height))#, flags=pyg
 
 # music in background
 load_music = pygame.mixer.music.load('music/bdub.mp3')
-#pygame.mixer.music.play(-1)
+pygame.mixer.music.play(-1)
 
 # read image pixels
 im = Image.open('rocket/rocket.png') # Can be many different formats.
@@ -51,6 +51,8 @@ rocket_pixel = im.size[1]
 rocket_pixel = 64
 left_border = screen_width - rocket_pixel
 right_border  = 0
+
+background = pygame.image.load('background/galaxy.jpg')
 
 # screen title and icon
 pygame.display.set_caption("Space Invaders")
@@ -67,9 +69,6 @@ player_x = (screen_width / 2 ) - 1
 player_y = 518
 player_x_change = 0
 
-def player(x, y):
-    # blit = draw image of player|rocket
-    screen.blit(player_img, (x, y))
 
 #
 ##
@@ -83,16 +82,44 @@ enemy_y = random.randint(50, 150)
 enemy_x_change = 0.3
 enemy_y_change = 40
 
+#
+##
+### bullet
+##
+#
+bullet_img = pygame.image.load('bullet/bullet32.png')
+bullet_pixel = 32
+bullet_x = random.randint(0, (799 - enemy_pixel))
+bullet_y = random.randint(50, 150)
+
+#
+##
+### functions
+##
+#
+def player(x, y):
+    # blit = draw image of player|rocket
+    screen.blit(player_img, (x, y))
+
 def enemy(x, y):
     # blit = draw image of player|rocket
     screen.blit(enemy_img, (x, y))
 
+def bullet(x, y):
+    # blit = draw image of player|rocket
+    screen.blit(bullet_img, (x, y))
 
-# Game Loop
+#
+##
+### Game Loop
+##
+#
 running = True
 while running:
 
-    screen.fill((BLACK))
+    #screen.fill((BLACK))
+
+    screen.blit(background, (0, 0))
 
     # load music
     load_music
