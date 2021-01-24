@@ -19,9 +19,9 @@ full_screen_modes = pygame.display.list_modes()
 #print(full_screen_modes)
 index_mode = 0
 
-#while index_mode <= len(full_screen_modes):
-#    print(index_mode,"-", full_screen_modes[index_mode])
-#    index_mode += 1
+while index_mode <= len(full_screen_modes) - 1:
+    print(index_mode,"-", full_screen_modes[index_mode])
+    index_mode += 1
 
 # game window
 # x axis => left to right
