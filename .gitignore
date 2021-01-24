@@ -1,2 +1,5 @@
 # ignore temp python files
 tempCodeRunnerFile.py
+
+#png
+*.png
