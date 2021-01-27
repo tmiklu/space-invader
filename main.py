@@ -1,4 +1,5 @@
 import pygame
+import math
 import time
 import os
 import platform
@@ -59,6 +60,8 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('icons/rocket.png')
 pygame.display.set_icon(icon)
 
+score = 0
+
 #
 ##
 #### player
@@ -75,12 +78,20 @@ player_x_change = 0
 ### enemy
 ##
 #
-enemy_img = pygame.image.load('enemy/alien.png')
-enemy_pixel = 64
-enemy_x = random.randint(0, (799 - enemy_pixel))
-enemy_y = random.randint(50, 150)
-enemy_x_change = 0.3
-enemy_y_change = 40
+enemy_img = []
+enemy_x = []
+enemy_y = []
+enemy_x_change = []
+enemy_y_change = []
+num_of_enemies = 6
+
+for i in range(num_of_enemies):
+    enemy_img.append(pygame.image.load('enemy/enemy.png'))
+    enemy_pixel = 64
+    enemy_x.append(random.randint(0, (799 - enemy_pixel)))
+    enemy_y.append(random.randint(50, 150))
+    enemy_x_change.append(0.3)
+    enemy_y_change.append(40)
 
 #
 ##
@@ -116,13 +127,9 @@ def player(x, y):
     # blit = draw image of player|rocket
     screen.blit(player_img, (x, y))
 
-def enemy(x, y):
+def enemy(x, y, i):
     # blit = draw image of player|rocket
-    screen.blit(enemy_img, (x, y))
-
-def enemy1(x, y):
-    # blit = draw image of player|rocket
-    screen.blit(enemy1_img, (x, y))
+    screen.blit(enemy_img[i], (x, y))
 
 def fire_bullet(x, y):
     global bullet_state
@@ -132,6 +139,13 @@ def fire_bullet(x, y):
 def bullet(x, y):
     # blit = draw image of player|rocket
     screen.blit(bullet_img, (x, y))
+
+def isCollision(enemy_x, enemy_y, bullet_x, bullet_y):
+    distance = math.sqrt(math.pow(enemy_x - bullet_x, 2) + (math.pow(enemy_y-bullet_y, 2)))
+    if distance < 27:
+        return True
+    else:
+        return False
 
 #
 ##
@@ -160,8 +174,8 @@ while running:
             running = False
             print("Quit was pressed")
 
-        else:
-            print(event)
+        #else:
+        #    print(event)
 
         # if keystroke is pressed check whether is right or left
         if event.type == pygame.KEYDOWN:
@@ -192,25 +206,28 @@ while running:
     elif player_x >= left_border:
         player_x = left_border
 
-    enemy_x += enemy_x_change
-
-    # program border
-    if enemy_x <= right_border:
-        enemy_x_change = 0.2
-        enemy_y += enemy_y_change
-    elif enemy_x >= left_border:
-        enemy_x_change = -0.2
-        enemy_y += enemy_y_change
-
-    # enemy1
-    enemy1_x += enemy1_x_change
-
-    if enemy1_x <= right_border:
-        enemy1_x_change = 0.2
-        enemy1_y += enemy1_y_change
-    elif enemy1_x >= left_border:
-        enemy1_x_change = -0.2
-        enemy1_y += enemy1_y_change
+    # 
+    for i in range(num_of_enemies):
+        enemy_x[i] += enemy_x_change[i]
+        if enemy_x[i] <= right_border:
+            enemy_x_change[i] = 0.2
+            enemy_y[i] += enemy_y_change[i]
+        elif enemy_x[i] >= left_border:
+            enemy_x_change[i] = -0.2
+            enemy_y[i] += enemy_y_change[i]
+        
+        # Collision
+        collision = isCollision(enemy_x[i], enemy_y[i], bullet_x, bullet_y)
+        if collision:
+            bullet_y = 480
+            bullet_state = "ready"
+            score += 1
+            print(score)
+            enemy_pixel = 64
+            enemy_x[i] = random.randint(0, (799 - enemy_pixel))
+            enemy_y[i] = random.randint(50, 150)
+        
+        enemy(enemy_x[i], enemy_y[i], i)
     
     # bullet movement
     if bullet_state is "fire":
@@ -220,10 +237,11 @@ while running:
     if bullet_y <= -1:
         bullet_y = 540
         bullet_state = "ready"
+    
 
     player(player_x, player_y)
-    enemy(enemy_x, enemy_y)
-    enemy1(enemy1_x, enemy1_y)
+    
+    #enemy1(enemy1_x, enemy1_y)
     # update screen game when score changing, bullets and etc...
     pygame.display.update()
     
